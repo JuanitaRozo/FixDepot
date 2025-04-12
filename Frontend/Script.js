@@ -43,18 +43,19 @@ document.getElementById('form-eliminar').addEventListener('submit', async e => {
   });
   const result = await res.json();
   alert(`Eliminado: ${JSON.stringify(result)}`);
-})
-function listar(){
-  event.preventDefault();
-  const requestOptions = {
-    method: "GET",
-    redirect: "follow"
+
+  function listar(){
+    event.preventDefault();
+    const requestOptions = {
+      method: "GET",
+      redirect: "follow"
+    };
+    fetch("https://github.com/JuanitaRozo/FixDepotHTML.git", requestOptions)
+      .then((response) =>
+        response.text())
+      .then((result) =>
+        cargar(result))
+      .catch((error) =>
+        console.error(error));
   };
-  fetch("https://github.com/JuanitaRozo/FixDepotHTML.git", requestOptions)
-    .then((response) =>
-      response.text())
-    .then((result) =>
-      cargar(result))
-    .catch((error) =>
-      console.error(error));
-};
+})
