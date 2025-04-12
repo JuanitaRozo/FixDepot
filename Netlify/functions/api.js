@@ -1,19 +1,23 @@
-let repairs = []; // base de datos en memoria
+let repairs = [];
 
 exports.handler = async (event) => {
   const method = event.httpMethod;
   const body = event.body ? JSON.parse(event.body) : null;
 
   if (method === 'POST') {
-    const newRepair = { id: Date.now().toString(), ...body };
+    const newRepair = { ...body };
     repairs.push(newRepair);
     return response(201, newRepair);
   }
 
   if (method === 'GET') {
-    const id = event.queryStringParameters.id;
-    const found = repairs.find(r => r.id === id);
-    return found ? response(200, found) : response(404, { error: 'No encontrado' });
+    const id = event.queryStringParameters?.id;
+    if (id) {
+      const found = repairs.find(r => r.id === id);
+      return found ? response(200, found) : response(404, { error: 'No encontrado' });
+    } else {
+      return response(200, repairs);
+    }
   }
 
   if (method === 'PUT') {

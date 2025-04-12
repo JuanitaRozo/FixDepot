@@ -33,24 +33,28 @@ document.getElementById('form-actualizar').addEventListener('submit', async e =>
   alert(`Actualizado: ${JSON.stringify(result)}`);
 });
 
-fetch("https://github.com/JuanitaRozo/FixDepotHTML.git", requestOptions)
-.then((response) => response.text())
-.then((result) => console.log(result))
-.catch((error) => console.error(error));
+// Eliminar
+document.getElementById('form-eliminar').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = new FormData(e.target).get('id');
+  const res = await fetch(baseUrl, {
+    method: 'DELETE',
+    body: JSON.stringify({ id }),
+  });
+  const result = await res.json();
+  alert(`Eliminado: ${JSON.stringify(result)}`);
+});
 
-
-function listar(){
-  event.preventDefault();
-  const requestOptions = {
-    method: "GET",
-    redirect: "follow"
-  };
-  fetch("https://github.com/JuanitaRozo/FixDepotHTML.git", requestOptions)
-    .then((response) =>
-      response.text())
-    .then((result) =>
-      cargar(result))
-    .catch((error) =>
-      console.error(error));
-}
-
+// Listar
+document.getElementById('form-listar').addEventListener('submit', async e => {
+  e.preventDefault();
+  const res = await fetch(`${baseUrl}`);
+  const result = await res.json();
+  const lista = document.getElementById('lista-reparaciones');
+  lista.innerHTML = '';
+  result.forEach(rep => {
+    const li = document.createElement('li');
+    li.textContent = `ID: ${rep.id}, Cliente: ${rep.cliente}, Equipo: ${rep.equipo}`;
+    lista.appendChild(li);
+  });
+});

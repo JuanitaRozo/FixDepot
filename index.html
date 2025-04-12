@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script type="text/javascript" src="./frontend/script.js"></script>
   <title>Depósito de Reparaciones</title>
 </head>
 <body>
@@ -45,14 +44,14 @@
     <button type="submit">Eliminar</button>
   </form>
 
-  <script src="frontend/script.js"></script>
-</body>
-</html>
-
-  <h2>Listar Depósito de Reparaciones</h2>
-  <form id="formListar">
-    <p id="rta">Almacenado:</p>
-    <input type="submit" value="Listar" onclick="listar(event)">
+  <!-- Listar Reparaciones -->
+  <h2>Listar Reparaciones</h2>
+  <form id="form-listar">
+    <button type="submit">Listar</button>
   </form>
+  <ul id="lista-reparaciones"></ul>
+
+  <!-- Script al final del body -->
+  <script type="module" src="frontend/script.js"></script>
 </body>
 </html>
