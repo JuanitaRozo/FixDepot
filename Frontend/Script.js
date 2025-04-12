@@ -33,3 +33,24 @@ document.getElementById('form-actualizar').addEventListener('submit', async e =>
   alert(`Actualizado: ${JSON.stringify(result)}`);
 });
 
+fetch("https://github.com/JuanitaRozo/FixDepotHTML.git", requestOptions)
+.then((response) => response.text())
+.then((result) => console.log(result))
+.catch((error) => console.error(error));
+
+
+function listar(){
+  event.preventDefault();
+  const requestOptions = {
+    method: "GET",
+    redirect: "follow"
+  };
+  fetch("https://github.com/JuanitaRozo/FixDepotHTML.git", requestOptions)
+    .then((response) =>
+      response.text())
+    .then((result) =>
+      cargar(result))
+    .catch((error) =>
+      console.error(error));
+}
+
