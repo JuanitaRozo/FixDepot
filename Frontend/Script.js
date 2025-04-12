@@ -52,4 +52,4 @@ function listar(){
     .then((result) =>
       cargar(result))
     .catch((error) =>
-      console.error(error));
+      console.error(error))};
