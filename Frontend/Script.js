@@ -1,55 +1,60 @@
-const BASE_URL = '/.netlify/functions/api';
+const baseUrl = '/.netlify/functions/api';
 
-document.getElementById('addForm').addEventListener('submit', async (e) => {
+// Agregar
+document.getElementById('form-agregar').addEventListener('submit', async e => {
   e.preventDefault();
-  const data = {
-    cliente: document.getElementById('cliente').value,
-    equipo: document.getElementById('equipo').value,
-    falla: document.getElementById('falla').value,
-    fechaIngreso: document.getElementById('fechaIngreso').value,
-  };
-  await fetch(BASE_URL, {
+  const data = Object.fromEntries(new FormData(e.target));
+  const res = await fetch(baseUrl, {
     method: 'POST',
     body: JSON.stringify(data),
   });
+  const result = await res.json();
+  alert(`Agregado: ${JSON.stringify(result)}`);
 });
 
-document.getElementById('getForm').addEventListener('submit', async (e) => {
+// Consultar
+document.getElementById('form-consultar').addEventListener('submit', async e => {
   e.preventDefault();
-  const id = document.getElementById('consultaId').value;
-  const res = await fetch(`${BASE_URL}?id=${id}`);
-  const data = await res.json();
-  alert(JSON.stringify(data));
+  const id = new FormData(e.target).get('id');
+  const res = await fetch(`${baseUrl}?id=${id}`);
+  const result = await res.json();
+  alert(`Consulta: ${JSON.stringify(result)}`);
 });
 
-document.getElementById('updateForm').addEventListener('submit', async (e) => {
+// Actualizar
+document.getElementById('form-actualizar').addEventListener('submit', async e => {
   e.preventDefault();
-  const id = document.getElementById('updateId').value;
-  const estado = document.getElementById('nuevoEstado').value;
-  await fetch(`${BASE_URL}?id=${id}`, {
+  const data = Object.fromEntries(new FormData(e.target));
+  const res = await fetch(baseUrl, {
     method: 'PUT',
-    body: JSON.stringify({ estado }),
+    body: JSON.stringify(data),
   });
+  const result = await res.json();
+  alert(`Actualizado: ${JSON.stringify(result)}`);
 });
 
-document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+// Eliminar
+document.getElementById('form-eliminar').addEventListener('submit', async e => {
   e.preventDefault();
-  const id = document.getElementById('deleteId').value;
-  await fetch(`${BASE_URL}?id=${id}`, {
+  const id = new FormData(e.target).get('id');
+  const res = await fetch(baseUrl, {
     method: 'DELETE',
+    body: JSON.stringify({ id }),
   });
-});
-
+  const result = await res.json();
+  alert(`Eliminado: ${JSON.stringify(result)}`);
+})
 function listar(){
   event.preventDefault();
   const requestOptions = {
     method: "GET",
     redirect: "follow"
   };
-  fetch("https://ejemplodedsws.netlify.app/.netlify/functions.js", requestOptions)
+  fetch("https://github.com/JuanitaRozo/FixDepotHTML.git", requestOptions)
     .then((response) =>
       response.text())
     .then((result) =>
       cargar(result))
     .catch((error) =>
-      console.error(error))};
+      console.error(error));
+};
