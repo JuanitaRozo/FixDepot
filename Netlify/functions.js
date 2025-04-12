@@ -1,15 +1,33 @@
-let reparaciones = {}; // Simula almacenamiento en memoria
-let currentId = 1;
+const fs = require("fs");
+const path = require("path");
+
+const DB_PATH = path.join(__dirname, "../../backend/db/reparaciones.json");
+
+function leerBaseDeDatos() {
+  if (!fs.existsSync(DB_PATH)) {
+    fs.writeFileSync(DB_PATH, JSON.stringify({}));
+  }
+  const contenido = fs.readFileSync(DB_PATH, "utf-8");
+  return JSON.parse(contenido || "{}");
+}
+
+function escribirBaseDeDatos(datos) {
+  fs.writeFileSync(DB_PATH, JSON.stringify(datos, null, 2));
+}
 
 exports.handler = async (event) => {
   const method = event.httpMethod;
   const id = event.queryStringParameters?.id;
+  const listar = event.queryStringParameters?.listar;
+
+  let reparaciones = leerBaseDeDatos();
 
   switch (method) {
     case "POST": {
       const data = JSON.parse(event.body);
-      const newId = currentId++;
+      const newId = Date.now().toString();
       reparaciones[newId] = { id: newId, ...data };
+      escribirBaseDeDatos(reparaciones);
 
       return {
         statusCode: 200,
@@ -18,6 +36,13 @@ exports.handler = async (event) => {
     }
 
     case "GET": {
+      if (listar === "1") {
+        return {
+          statusCode: 200,
+          body: JSON.stringify(reparaciones, null, 2)
+        };
+      }
+
       if (!id || !reparaciones[id]) {
         return {
           statusCode: 404,
@@ -41,6 +66,7 @@ exports.handler = async (event) => {
 
       const nuevosDatos = JSON.parse(event.body);
       reparaciones[id] = { ...reparaciones[id], ...nuevosDatos };
+      escribirBaseDeDatos(reparaciones);
 
       return {
         statusCode: 200,
@@ -57,6 +83,7 @@ exports.handler = async (event) => {
       }
 
       delete reparaciones[id];
+      escribirBaseDeDatos(reparaciones);
 
       return {
         statusCode: 200,
