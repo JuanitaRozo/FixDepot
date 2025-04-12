@@ -1,61 +1,107 @@
 const API = "/.netlify/functions/reparaciones";
 
-// AGREGAR
-formAgregar.addEventListener("submit", async (e) => {
+const mostrarMensaje = (mensaje, tipo = "exito") => {
+  const div = document.getElementById("mensajes");
+  div.textContent = mensaje;
+  div.style.color = tipo === "exito" ? "green" : "red";
+  setTimeout(() => {
+    div.textContent = "";
+  }, 3000);
+};
+
+// Agregar
+document.getElementById("form-agregar").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const data = {
-    cliente: cliente.value,
-    equipo: equipo.value,
-    marca: marca.value,
-    modelo: modelo.value,
-    falla: falla.value,
-    fechaIngreso: fechaIngreso.value
-  };
-  const res = await fetch(API, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" }
-  });
-  alert((await res.json()).mensaje);
+  const data = Object.fromEntries(new FormData(e.target));
+  try {
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      mostrarMensaje("Registro agregado con éxito.");
+      mostrarDatos();
+      e.target.reset();
+    } else {
+      mostrarMensaje("Error al agregar registro.", "error");
+    }
+  } catch (err) {
+    mostrarMensaje("Error de red al agregar.", "error");
+  }
 });
 
-// CONSULTAR
-formConsultar.addEventListener("submit", async (e) => {
+// Consultar
+document.getElementById("form-consultar").addEventListener("submit", (e) => {
   e.preventDefault();
-  const id = consultaId.value;
-  const res = await fetch(`${API}?id=${id}`);
-  const data = await res.text();
-  resultadoConsulta.textContent = data;
+  mostrarDatos();
 });
 
-// ACTUALIZAR
-formActualizar.addEventListener("submit", async (e) => {
+// Actualizar
+document.getElementById("form-actualizar").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const id = actualizarId.value;
-  const nuevosDatos = {
-    cliente: nuevoCliente.value,
-    equipo: nuevoEquipo.value,
-    marca: nuevaMarca.value,
-    modelo: nuevoModelo.value,
-    falla: nuevaFalla.value,
-    fechaIngreso: nuevaFecha.value
-  };
-  const res = await fetch(`${API}?id=${id}`, {
-    method: "PUT",
-    body: JSON.stringify(nuevosDatos),
-    headers: { "Content-Type": "application/json" }
-  });
-  alert((await res.json()).mensaje);
+  const data = Object.fromEntries(new FormData(e.target));
+  const { id, ...rest } = data;
+  try {
+    const res = await fetch(`${apiURL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(rest),
+    });
+    if (res.ok) {
+      mostrarMensaje("Registro actualizado con éxito.");
+      mostrarDatos();
+      e.target.reset();
+    } else {
+      mostrarMensaje("Error al actualizar.", "error");
+    }
+  } catch (err) {
+    mostrarMensaje("Error de red al actualizar.", "error");
+  }
 });
 
-// ELIMINAR
-formEliminar.addEventListener("submit", async (e) => {
+// Eliminar
+document.getElementById("form-eliminar").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const id = eliminarId.value;
-  const res = await fetch(`${API}?id=${id}`, { method: "DELETE" });
-  alert((await res.json()).mensaje);
+  const id = new FormData(e.target).get("id");
+  try {
+    const res = await fetch(`${apiURL}/${id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      mostrarMensaje("Registro eliminado con éxito.");
+      mostrarDatos();
+      e.target.reset();
+    } else {
+      mostrarMensaje("Error al eliminar.", "error");
+    }
+  } catch (err) {
+    mostrarMensaje("Error de red al eliminar.", "error");
+  }
 });
 
+// Botón para actualizar manualmente
 document.getElementById("btn-actualizar-manual").addEventListener("click", () => {
   mostrarDatos();
 });
+
+// Mostrar registros
+async function mostrarDatos() {
+  try {
+    const res = await fetch(apiURL);
+    const data = await res.json();
+    const contenedor = document.getElementById("resultados");
+    if (data.length === 0) {
+      contenedor.innerHTML = "<p>No hay registros disponibles.</p>";
+      return;
+    }
+    contenedor.innerHTML = data
+      .map(
+        (r) =>
+          `<p><strong>ID:</strong> ${r.id} - ${r.cliente} | ${r.articulo} | ${r.fallo}</p>`
+      )
+      .join("");
+  } catch (err) {
+    mostrarMensaje("Error al cargar registros.", "error");
+  }
+}
