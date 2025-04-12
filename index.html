@@ -1,58 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Depósito de Reparaciones</title>
 </head>
 <body>
-  <h1>Depósito de Reparaciones - CRUD</h1>
+  <h1>Depósito de Reparaciones</h1>
 
-  <!-- Formulario AGREGAR -->
-  <h2>Agregar Reparación</h2>
-  <form id="form-agregar">
-    <input type="number" id="id reparación" placeholder="id reparación" required />
-    <input type="text" id="cliente" placeholder="Nombre del Cliente" required />
-    <input type="text" id="equipo a reparar" placeholder="Equipo" required />
-    <textarea id="falla" placeholder="Descripción de la Falla" required></textarea>
-    <input type="date" id="fechaIngreso" required />
+    <h2>Agregar Reparación</h2>
+  <form id="addForm">
+    <input type="text" id="cliente" placeholder="Cliente" required>
+    <input type="text" id="equipo" placeholder="Equipo" required>
+    <input type="text" id="falla" placeholder="Descripción de la Falla" required>
+    <input type="date" id="fechaIngreso" required>
     <button type="submit">Agregar</button>
   </form>
 
-  <!-- Formulario CONSULTAR -->
-  <h2>Consultar Reparación</h2>
-  <form id="form-consultar">
-    <input type="text" id="consulta-id" placeholder="ID de reparación" required />
+   <h2>Consultar Reparación</h2>
+  <form id="getForm">
+    <input type="text" id="consultaId" placeholder="ID de reparación">
     <button type="submit">Consultar</button>
   </form>
-  <pre id="resultado-consulta"></pre>
-
-  <!-- Formulario ACTUALIZAR -->
+  
   <h2>Actualizar Reparación</h2>
-  <form id="form-actualizar">
-    <input type="text" id="actualizar-id" placeholder="ID de reparación" required />
-    <input type="text" id="nuevo-cliente" placeholder="Nuevo Cliente" />
-    <input type="text" id="nuevo-equipo" placeholder="Nuevo Equipo" />
-    <input type="text" id="nueva-marca" placeholder="Nueva Marca" />
-    <input type="text" id="nuevo-modelo" placeholder="Nuevo Modelo" />
-    <textarea id="nueva-falla" placeholder="Nueva Falla"></textarea>
-    <input type="date" id="nueva-fecha" />
+  <form id="updateForm">
+    <input type="text" id="updateId" placeholder="ID a actualizar" required>
+    <input type="text" id="nuevoEstado" placeholder="Nuevo estado" required>
     <button type="submit">Actualizar</button>
   </form>
-
-  <!-- Formulario ELIMINAR -->
-  <h2>Eliminar Reparación</h2>
-  <form id="form-eliminar">
-    <input type="text" id="eliminar-id" placeholder="ID de reparación" required />
+    <h2>Eliminar Reparación</h2>
+  <form id="deleteForm">
+    <input type="text" id="deleteId" placeholder="ID a eliminar" required>
     <button type="submit">Eliminar</button>
   </form>
-  <section id="data-container">
-    <h2>Datos Registrados</h2>
-    <button id="btn-actualizar-manual">Actualizar Lista</button>
-    <div id="mensajes"></div>
-    <div id="resultados"></div>
-  </section>
-
-  <script src="./frontend/script.js"></script>
+  <script src="frontend/script.js"></script>
 </body>
 </html>
