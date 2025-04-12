@@ -1,41 +1,31 @@
-let registrosOriginales = [];
-let registrosActualizados = [];
-let idCounter = 1;
+let reparaciones = [];
+let id = 1;
 
-exports.getAll = (req, res) => {
-  res.json({
-    originales: registrosOriginales,
-    actualizados: registrosActualizados
-  });
-};
+exports.handler = async (event) => {
+  const method = event.httpMethod;
+  const body = event.body ? JSON.parse(event.body) : {};
+  const pathId = event.path.split("/").pop();
 
-exports.create = (req, res) => {
-  const nuevo = { id: idCounter++, ...req.body };
-  registrosOriginales.push(nuevo);
-  res.status(201).json(nuevo);
-};
+  switch (method) {
+    case "GET":
+      return { statusCode: 200, body: JSON.stringify(reparaciones) };
 
-exports.update = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = registrosOriginales.findIndex(r => r.id === id);
-  if (index === -1) return res.status(404).send("No encontrado");
-  const actualizado = { ...registrosOriginales[index], ...req.body };
-  registrosOriginales[index] = actualizado;
+    case "POST":
+      const nuevo = { id: id++, ...body };
+      reparaciones.push(nuevo);
+      return { statusCode: 201, body: JSON.stringify(nuevo) };
 
-  // Reemplaza si ya está en actualizados, si no lo añade
-  const actualizadoIndex = registrosActualizados.findIndex(r => r.id === id);
-  if (actualizadoIndex !== -1) {
-    registrosActualizados[actualizadoIndex] = actualizado;
-  } else {
-    registrosActualizados.push(actualizado);
+    case "PUT":
+      const index = reparaciones.findIndex((r) => r.id == pathId);
+      if (index === -1) return { statusCode: 404, body: "No encontrado" };
+      reparaciones[index] = { ...reparaciones[index], ...body };
+      return { statusCode: 200, body: JSON.stringify(reparaciones[index]) };
+
+    case "DELETE":
+      reparaciones = reparaciones.filter((r) => r.id != pathId);
+      return { statusCode: 204 };
+
+    default:
+      return { statusCode: 405, body: "Método no permitido" };
   }
-
-  res.json(actualizado);
-};
-
-exports.delete = (req, res) => {
-  const id = parseInt(req.params.id);
-  registrosOriginales = registrosOriginales.filter(r => r.id !== id);
-  registrosActualizados = registrosActualizados.filter(r => r.id !== id);
-  res.status(204).send();
 };
