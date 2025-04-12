@@ -1,5 +1,5 @@
 let repairs = [];
-
+export const baseUrl = '/.netlify/functions/api';
 exports.handler = async (event) => {
   const method = event.httpMethod;
   const body = event.body ? JSON.parse(event.body) : null;

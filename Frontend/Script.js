@@ -99,3 +99,4 @@ document.getElementById('form-listar').addEventListener('submit', async e => {
 
 // Botón manual para actualizar listado
 document.getElementById('btn-actualizar-listado').addEventListener('click', mostrarReparacionesRegistradas);
+window.addEventListener('DOMContentLoaded', mostrarReparacionesRegistradas);

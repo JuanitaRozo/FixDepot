@@ -1,22 +1,33 @@
-// /.netlify/functions/reparaciones.js (ejemplo)
-const { MongoClient } = require("mongodb");
+async function mostrarReparacionesRegistradas() {
+  const res = await fetch(`${baseUrl}`);
+  const reparaciones = await res.json();
+  console.log('Reparaciones obtenidas:', reparaciones); // 👈
 
-const uri = process.env.MONGO_URI;
-const client = new MongoClient(uri);
+  const contenedor = document.getElementById('reparaciones-registradas');
+  contenedor.innerHTML = '';
 
-exports.handler = async (event) => {
-  const method = event.httpMethod;
-  
-  if (method === "POST") {
-    const data = JSON.parse(event.body);
-    await client.connect();
-    const collection = client.db("miBase").collection("reparaciones");
-    const result = await collection.insertOne(data);
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ id: result.insertedId }),
-    };
+  if (!Array.isArray(reparaciones) || reparaciones.length === 0) {
+    contenedor.textContent = 'No hay reparaciones registradas.';
+    return;
   }
 
-  // Agrega aquí GET, PUT y DELETE según sea necesario
-};
+  const tabla = document.createElement('table');
+  tabla.border = '1';
+  const encabezado = document.createElement('tr');
+  encabezado.innerHTML = `<th>ID</th><th>Cliente</th><th>Equipo</th><th>Problema</th><th>Fecha de Ingreso</th>`;
+  tabla.appendChild(encabezado);
+
+  reparaciones.forEach(rep => {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `
+      <td>${rep.id}</td>
+      <td>${rep.cliente}</td>
+      <td>${rep.equipo}</td>
+      <td>${rep.problema}</td>
+      <td>${rep.fechaIngreso}</td>
+    `;
+    tabla.appendChild(fila);
+  });
+
+  contenedor.appendChild(tabla);
+}
