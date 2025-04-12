@@ -39,3 +39,17 @@ document.getElementById('deleteForm').addEventListener('submit', async (e) => {
     method: 'DELETE',
   });
 });
+
+function listar(){
+  event.preventDefault();
+  const requestOptions = {
+    method: "GET",
+    redirect: "follow"
+  };
+  fetch("https://ejemplodedsws.netlify.app/.netlify/functions.js", requestOptions)
+    .then((response) =>
+      response.text())
+    .then((result) =>
+      cargar(result))
+    .catch((error) =>
+      console.error(error));
