@@ -1,31 +1,22 @@
-let reparaciones = [];
-let id = 1;
+// /.netlify/functions/reparaciones.js (ejemplo)
+const { MongoClient } = require("mongodb");
+
+const uri = process.env.MONGO_URI;
+const client = new MongoClient(uri);
 
 exports.handler = async (event) => {
   const method = event.httpMethod;
-  const body = event.body ? JSON.parse(event.body) : {};
-  const pathId = event.path.split("/").pop();
-
-  switch (method) {
-    case "GET":
-      return { statusCode: 200, body: JSON.stringify(reparaciones) };
-
-    case "POST":
-      const nuevo = { id: id++, ...body };
-      reparaciones.push(nuevo);
-      return { statusCode: 201, body: JSON.stringify(nuevo) };
-
-    case "PUT":
-      const index = reparaciones.findIndex((r) => r.id == pathId);
-      if (index === -1) return { statusCode: 404, body: "No encontrado" };
-      reparaciones[index] = { ...reparaciones[index], ...body };
-      return { statusCode: 200, body: JSON.stringify(reparaciones[index]) };
-
-    case "DELETE":
-      reparaciones = reparaciones.filter((r) => r.id != pathId);
-      return { statusCode: 204 };
-
-    default:
-      return { statusCode: 405, body: "Método no permitido" };
+  
+  if (method === "POST") {
+    const data = JSON.parse(event.body);
+    await client.connect();
+    const collection = client.db("miBase").collection("reparaciones");
+    const result = await collection.insertOne(data);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ id: result.insertedId }),
+    };
   }
+
+  // Agrega aquí GET, PUT y DELETE según sea necesario
 };
