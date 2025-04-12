@@ -55,3 +55,7 @@ formEliminar.addEventListener("submit", async (e) => {
   const res = await fetch(`${API}?id=${id}`, { method: "DELETE" });
   alert((await res.json()).mensaje);
 });
+
+document.getElementById("btn-actualizar-manual").addEventListener("click", () => {
+  mostrarDatos();
+});
